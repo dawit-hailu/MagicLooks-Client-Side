@@ -1,24 +1,40 @@
-import httplib, urllib, base64
+import httplib, urllib, base64, json
 
-def get_users():
+def signIn(personId):
     try:
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        body = '{"personId":"'+ personId +'"}'        
         conn = httplib.HTTPSConnection('magiclooks.herokuapp.com')
-        conn.request("GET", "/users/3/mirrors")
+        conn.request("PUT", "/mirrors/1", body, headers)
         response = conn.getresponse()
         data = response.read()
-        print(data)
+        print(json.loads(data)["status"])
+        conn.close()
+    except Exception as e:
+        print(e)
+
+def signOut():
+    try:
+        conn = httplib.HTTPSConnection('magiclooks.herokuapp.com')
+        conn.request("DELETE", "/mirrors/1")
+        response = conn.getresponse()
+        data = response.read()
+        print(json.loads(data)["status"])
         conn.close()
     except Exception as e:
         print(e)
 
 
-def get_face_ids():
+def getFaceId():
 
     headers = {
         'Content-Type': 'application/octet-stream',
         'Ocp-Apim-Subscription-Key': '046cc674fd024894bf21f1f57203d3d7'
     }
-    f = open('/home/pi/Desktop/new.jpg', 'rb')
+    f = open('/home/pi/Desktop/image.jpg', 'rb')
     body = f.read()
 
     f.close()
@@ -50,12 +66,13 @@ def identify(faceId):
         conn.request("POST", "/face/v1.0/identify?%s" % params, body, headers)
         response = conn.getresponse()
         data = response.read()
-        print str(data.split('"')[9])
+        return str(data.split('"')[9])
         conn.close()
     except Exception as e:
         print(e)
 
-#faceId = get_face_ids()
-#identify(faceId)
-get_users()
+#faceId = getFaceId()
+#personId = identify(faceId)
+#signIn(personId)
+signOut()
 
