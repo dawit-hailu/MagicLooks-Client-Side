@@ -1,4 +1,5 @@
-import httplib, urllib, base64, json, picamera
+import httplib, urllib, base64, json, picamera,time, RPi.GPIO as GPIO
+
 
 def signIn(personId):
     try:
@@ -35,6 +36,7 @@ def getFaceId():
         'Ocp-Apim-Subscription-Key': '046cc674fd024894bf21f1f57203d3d7'
     }
     with picamera.PiCamera() as camera:
+        camera.rotation = 90
         camera.capture('image.jpg')
     camera.close()
     
@@ -74,9 +76,21 @@ def identify(faceId):
         conn.close()
     except Exception as e:
         print(e)
-signOut()
-faceId = getFaceId()
-personId = identify(faceId)
-signIn(personId)
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(37, GPIO.IN)
+while True:
+    i=GPIO.input(37)
+    if i==0:
+        print "No intruders",i
+        time.sleep(0.5)
+    elif i==1:
+        print "intruder detected",i
+        signOut()
+        faceId = getFaceId()
+        personId = identify(faceId)
+        signIn(personId)
+        time.sleep(2)
+
 
 
