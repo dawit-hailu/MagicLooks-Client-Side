@@ -1,5 +1,5 @@
 import httplib, urllib, base64, json, picamera
-
+key = ENV["FACE"];
 def signIn(personId):
     try:
         headers = {
@@ -32,7 +32,8 @@ def getFaceId():
 
     headers = {
         'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': '046cc674fd024894bf21f1f57203d3d7'
+        
+        'Ocp-Apim-Subscription-Key': key
     }
     with picamera.PiCamera() as camera:
         camera.capture('image.jpg')
@@ -58,7 +59,7 @@ def identify(faceId):
 
     headers = {
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': '046cc674fd024894bf21f1f57203d3d7'
+        'Ocp-Apim-Subscription-Key': key
     }
     body = '{"personGroupId":"magiclooks","faceIds":['+ '"' + faceId + '"' +'],"maxNumOfCandidatesReturned":1,"confidenceThreshold":0.5}'
     
