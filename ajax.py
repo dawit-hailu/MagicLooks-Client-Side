@@ -1,5 +1,5 @@
 import httplib, urllib, base64, json, picamera
-key = ENV["FACE"];
+key = ENV["FACE"]
 def signIn(personId):
     try:
         headers = {
