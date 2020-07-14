@@ -82,10 +82,8 @@ GPIO.setup(37, GPIO.IN)
 while True:
     i=GPIO.input(37)
     if i==0:
-        print "No intruders",i
         time.sleep(0.5)
     elif i==1:
-        print "intruder detected",i
         signOut()
         faceId = getFaceId()
         personId = identify(faceId)
